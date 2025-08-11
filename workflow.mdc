@@ -1,0 +1,378 @@
+# ClarityCV Development Workflow & Rules
+
+## 🎯 Core Mission Statement
+**Build ClarityCV: A privacy-first, client-side ATS resume converter that processes everything in the browser without server communication.**
+
+---
+
+## 📋 Fundamental Rules (NON-NEGOTIABLE)
+
+### 🔒 RULE 1: Privacy & Security First
+- **NO SERVER COMMUNICATION**: All processing must occur client-side
+- **NO DATA TRANSMISSION**: Resume data never leaves user's browser
+- **NO TRACKING**: No cookies, analytics, or user identification
+- **NO STORAGE**: Data cleared on page refresh/close
+- **EXPLICIT PRIVACY**: Privacy statement must be prominent on every page
+
+### 🎨 RULE 2: User Experience Standards
+- **MOBILE-FIRST**: Design for mobile, enhance for desktop
+- **ACCESSIBILITY**: WCAG 2.1 AA compliance mandatory
+- **PERFORMANCE**: <3 seconds processing time for average files
+- **INTUITIVE**: Single-click/drag operations preferred
+- **RESPONSIVE**: Works flawlessly on all screen sizes
+
+### 🏗️ RULE 3: Technical Architecture
+- **STATIC EXPORT**: Next.js must use static export for deployment
+- **CLIENT-SIDE ONLY**: All logic in browser JavaScript
+- **COMPONENT-BASED**: Reusable, testable components
+- **TYPE-SAFE**: TypeScript for all code
+- **PROGRESSIVE**: Graceful degradation for older browsers
+
+### 📝 RULE 4: ATS Optimization Standards
+- **SINGLE COLUMN**: All output must be single-column layout
+- **STANDARD FONTS**: Arial, Calibri, or Georgia only
+- **NO GRAPHICS**: Remove all images, charts, logos
+- **CLEAN TABLES**: Convert tables to linear text
+- **STANDARD HEADERS**: Use conventional section names
+- **SIMPLE BULLETS**: Use only standard bullet points
+
+---
+
+## 🚀 Development Workflow
+
+### Stage Gate Process
+Each stage must be **COMPLETELY FINISHED** before moving to the next:
+
+```mermaid
+graph LR
+    A[Requirements Review] --> B[Development]
+    B --> C[Self-Testing]
+    C --> D[Code Review]
+    D --> E[Integration Testing]
+    E --> F[Stage Approval]
+    F --> G[Next Stage]
+    
+    C -->|Fail| B
+    D -->|Fail| B
+    E -->|Fail| B
+```
+
+### Before Starting Any Stage:
+1. ✅ **Review PLAN.md** for current stage requirements
+2. ✅ **Review PRD.md** for feature specifications
+3. ✅ **Check dependencies** from previous stages
+4. ✅ **Create task breakdown** with specific deliverables
+5. ✅ **Set acceptance criteria** for stage completion
+
+### Development Standards:
+- **Code Quality**: ESLint + Prettier configured
+- **Testing**: Minimum 80% code coverage
+- **Documentation**: All functions documented
+- **Git**: Meaningful commit messages following conventional commits
+- **Reviews**: All code reviewed before merge
+
+---
+
+## 🔧 Technical Implementation Rules
+
+### File Structure Standards:
+```
+src/
+├── app/                    # Next.js app router pages
+├── components/            # Reusable UI components
+│   ├── ui/               # Shadcn UI components
+│   ├── upload/           # File upload components
+│   ├── editor/           # Resume editor components
+│   └── download/         # Download components
+├── lib/                  # Utility functions
+│   ├── parsers/          # Document parsing logic
+│   ├── converters/       # ATS conversion logic
+│   └── generators/       # Document generation logic
+├── styles/               # CSS and theme files
+└── types/                # TypeScript type definitions
+```
+
+### Naming Conventions:
+- **Components**: PascalCase (e.g., `FileUploader.tsx`)
+- **Files**: kebab-case (e.g., `resume-parser.ts`)
+- **Variables**: camelCase (e.g., `resumeData`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_FILE_SIZE`)
+- **Types/Interfaces**: PascalCase with descriptive names
+
+### Code Quality Standards:
+```typescript
+// ✅ GOOD: Clear, typed, documented
+interface ResumeSection {
+  id: string;
+  title: string;
+  content: string;
+  type: 'experience' | 'education' | 'skills';
+}
+
+/**
+ * Parses PDF content and extracts text sections
+ * @param file - PDF file buffer
+ * @returns Promise resolving to parsed resume data
+ */
+async function parsePDF(file: ArrayBuffer): Promise<ParsedResume> {
+  // Implementation
+}
+
+// ❌ BAD: Unclear, untyped
+function parse(f: any) {
+  // Implementation
+}
+```
+
+---
+
+## 🧪 Testing Requirements
+
+### Mandatory Testing for Each Stage:
+1. **Unit Tests**: All functions and components
+2. **Integration Tests**: Component interactions
+3. **E2E Tests**: Complete user workflows
+4. **Accessibility Tests**: Screen reader compatibility
+5. **Performance Tests**: File processing speed
+6. **Browser Tests**: Chrome, Firefox, Safari, Edge
+
+### Test File Requirements:
+```
+ResumeParser.tsx
+├── ResumeParser.test.tsx      # Unit tests
+├── ResumeParser.integration.test.tsx  # Integration tests
+└── ResumeParser.e2e.test.tsx  # End-to-end tests
+```
+
+### Critical Test Cases:
+- **File Upload**: Various formats, sizes, corrupted files
+- **Parsing**: Different resume layouts, complex formatting
+- **ATS Conversion**: Verify all optimization rules applied
+- **Download**: Both DOCX and TXT formats
+- **Privacy**: No network requests during processing
+- **Performance**: Large files under 3-second limit
+
+---
+
+## 📊 Quality Gates & Acceptance Criteria
+
+### Stage Completion Checklist:
+- [ ] All planned features implemented
+- [ ] All tests passing (>80% coverage)
+- [ ] No linting errors or warnings
+- [ ] Performance requirements met
+- [ ] Accessibility audit passed
+- [ ] Cross-browser testing completed
+- [ ] Mobile responsiveness verified
+- [ ] Privacy compliance confirmed
+- [ ] Code review approved
+- [ ] Documentation updated
+
+### Definition of Done:
+1. ✅ **Functional**: Feature works as specified in PRD
+2. ✅ **Tested**: Comprehensive test coverage
+3. ✅ **Accessible**: WCAG 2.1 AA compliant
+4. ✅ **Performant**: Meets speed requirements
+5. ✅ **Secure**: No privacy violations
+6. ✅ **Responsive**: Works on all devices
+7. ✅ **Documented**: Clear documentation
+8. ✅ **Reviewed**: Code review completed
+
+---
+
+## 🚨 Error Handling & Debugging
+
+### Error Handling Standards:
+```typescript
+// ✅ GOOD: Comprehensive error handling
+try {
+  const result = await parseResume(file);
+  return result;
+} catch (error) {
+  if (error instanceof FileParsingError) {
+    showUserMessage('Unable to parse this file format. Please try a different file.');
+  } else {
+    logError('Parsing error:', error);
+    showUserMessage('An unexpected error occurred. Please try again.');
+  }
+  throw error;
+}
+
+// ❌ BAD: Silent failures
+try {
+  const result = await parseResume(file);
+} catch (error) {
+  // Silent failure
+}
+```
+
+### User Error Messages:
+- **Clear**: Non-technical language
+- **Actionable**: Tell user what to do next
+- **Helpful**: Suggest alternatives
+- **Consistent**: Same tone throughout app
+
+---
+
+## 🔄 Continuous Integration Rules
+
+### Pre-commit Hooks:
+- **Linting**: ESLint + Prettier
+- **Type checking**: TypeScript compiler
+- **Unit tests**: Jest test runner
+- **Build test**: Next.js build verification
+
+### Pull Request Requirements:
+1. **Description**: Clear explanation of changes
+2. **Testing**: Evidence of testing completed
+3. **Screenshots**: UI changes must include visuals
+4. **Performance**: Any performance impact noted
+5. **Privacy**: Confirmation of privacy compliance
+6. **Breaking Changes**: Clearly documented
+
+---
+
+## 📈 Performance Standards
+
+### File Processing Requirements:
+- **Small files** (<1MB): <1 second processing
+- **Medium files** (1-5MB): <2 seconds processing
+- **Large files** (5-10MB): <3 seconds processing
+- **File size limit**: 10MB maximum
+
+### Bundle Size Limits:
+- **Initial bundle**: <500KB gzipped
+- **Total assets**: <2MB including libraries
+- **Images**: WebP format, optimized sizes
+- **Fonts**: Subset to required characters
+
+---
+
+## 🎨 UI/UX Guidelines
+
+### Design System Rules:
+- **Colors**: Use theme system consistently
+- **Typography**: Consistent font sizes and weights
+- **Spacing**: 8px grid system
+- **Components**: Use Shadcn UI components
+- **Icons**: Lucide React icons only
+- **Animations**: Subtle, purposeful animations
+
+### User Flow Principles:
+1. **Progressive Disclosure**: Show information when needed
+2. **Clear Navigation**: Always show current step
+3. **Immediate Feedback**: Visual response to all actions
+4. **Error Prevention**: Validate before processing
+5. **Recovery**: Easy undo/restart options
+
+---
+
+## 🔒 Security & Privacy Checklist
+
+### Client-Side Security:
+- [ ] No eval() or dangerous functions
+- [ ] Input validation for all user data
+- [ ] XSS prevention measures
+- [ ] File type validation
+- [ ] Size limits enforced
+- [ ] No external script injection
+
+### Privacy Compliance:
+- [ ] No analytics or tracking
+- [ ] No cookies or localStorage persistence
+- [ ] No server communication
+- [ ] Clear privacy statements
+- [ ] Data deletion on session end
+- [ ] No user identification
+
+---
+
+## 📚 Documentation Requirements
+
+### Code Documentation:
+- **JSDoc**: All public functions
+- **README**: Setup and development instructions
+- **API docs**: Component interfaces
+- **Examples**: Usage examples for complex components
+
+### User Documentation:
+- **Help text**: In-app guidance
+- **FAQ**: Common questions addressed
+- **Privacy policy**: Clear privacy explanation
+- **Terms of use**: Usage guidelines
+
+---
+
+## 🚀 Deployment Workflow
+
+### Pre-deployment Checklist:
+- [ ] All tests passing
+- [ ] Performance audit completed
+- [ ] Accessibility audit passed
+- [ ] Security scan clean
+- [ ] Static export successful
+- [ ] Preview deployment tested
+- [ ] Privacy compliance verified
+
+### Deployment Steps:
+1. **Build**: `npm run build && npm run export`
+2. **Test**: Verify static files work locally
+3. **Deploy**: Push to Netlify
+4. **Verify**: Test production deployment
+5. **Monitor**: Check for errors/issues
+
+---
+
+## 📊 Success Metrics Tracking
+
+### Technical Metrics:
+- **Build time**: <2 minutes
+- **Bundle size**: <500KB gzipped
+- **Performance score**: >90 Lighthouse
+- **Accessibility score**: 100% Lighthouse
+- **Test coverage**: >80%
+
+### User Metrics (Anonymous):
+- **Conversion rate**: Upload to download
+- **Processing time**: Average file processing
+- **Error rate**: Failed conversions
+- **Format preference**: DOCX vs TXT downloads
+
+---
+
+## 🔄 Iterative Improvement Process
+
+### Weekly Reviews:
+1. **Performance**: Monitor metrics
+2. **Errors**: Review error logs
+3. **User feedback**: Analyze usage patterns
+4. **Technical debt**: Identify improvements
+5. **Security**: Review any security concerns
+
+### Monthly Planning:
+1. **Feature requests**: Prioritize new features
+2. **Performance**: Optimization opportunities
+3. **Security**: Update dependencies
+4. **Documentation**: Keep docs current
+5. **Testing**: Expand test coverage
+
+---
+
+## ⚠️ Critical Reminders
+
+### NEVER FORGET:
+1. 🔒 **Privacy is paramount** - No server communication
+2. 🎯 **ATS optimization** - Follow all conversion rules
+3. 📱 **Mobile-first** - Test on real devices
+4. ⚡ **Performance** - Keep processing under 3 seconds
+5. ♿ **Accessibility** - Support all users
+6. 🧪 **Test everything** - Comprehensive testing required
+7. 📝 **Document changes** - Keep documentation current
+8. 🔄 **Follow the plan** - Complete stages in order
+
+### CURRENT PRIORITY:
+**Stage 2: Landing Page & UX** - Update branding to ClarityCV and create compelling landing page per PRD requirements.
+
+---
+
+*This workflow must be followed strictly. Any deviations require explicit approval and documentation of the reasoning.*

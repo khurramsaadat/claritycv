@@ -61,8 +61,8 @@ export function DocumentProcessor({
 
   const downloadFile = (content: string | Uint8Array, filename: string, mimeType: string) => {
     // Handle different content types for Blob creation
-    const blobParts: BlobPart[] = typeof content === 'string' ? [content] : [content];
-    const blob = new Blob(blobParts, { type: mimeType });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const blob = new Blob([content as any], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;

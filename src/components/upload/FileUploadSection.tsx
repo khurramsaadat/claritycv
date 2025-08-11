@@ -5,10 +5,11 @@ import { FileUploader } from './FileUploader';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { DocumentProcessor } from './DocumentProcessor';
 import { ClientOnly } from '@/components/ClientOnly';
+import { EditorInterface } from '../editor/EditorInterface';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Zap, Download, CheckCircle2 } from 'lucide-react';
+import { Shield, Zap, Download, CheckCircle2, Edit3 } from 'lucide-react';
 import type { ProcessingResult } from '@/lib/document-processor';
 
 export function FileUploadSection() {
@@ -24,6 +25,7 @@ export function FileUploadSection() {
   
   const [processingResult, setProcessingResult] = useState<ProcessingResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
   
   const handleProcessingComplete = (result: ProcessingResult) => {
     setProcessingResult(result);
@@ -47,8 +49,29 @@ export function FileUploadSection() {
   const resetAll = () => {
     setProcessingResult(null);
     setIsProcessing(false);
+    setShowEditor(false);
     resetUpload();
   };
+
+  const handleOpenEditor = () => {
+    setShowEditor(true);
+  };
+
+  const handleBackFromEditor = () => {
+    setShowEditor(false);
+  };
+
+  // Show editor interface if processing is complete and user wants to edit
+  if (showEditor && processingResult) {
+    return (
+      <ClientOnly fallback={<div className="text-center p-8">Loading editor...</div>}>
+        <EditorInterface
+          processingResult={processingResult}
+          onBack={handleBackFromEditor}
+        />
+      </ClientOnly>
+    );
+  }
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-primary/5 to-accent/5">
@@ -202,13 +225,22 @@ export function FileUploadSection() {
                       }
                     </p>
                     {processingResult && (
-                      <Button 
-                        className="w-full"
-                        variant="outline"
-                        onClick={resetAll}
-                      >
-                        Process Another Resume
-                      </Button>
+                      <div className="space-y-2">
+                        <Button 
+                          className="w-full"
+                          onClick={handleOpenEditor}
+                        >
+                          <Edit3 className="h-4 w-4 mr-2" />
+                          Edit Resume
+                        </Button>
+                        <Button 
+                          className="w-full"
+                          variant="outline"
+                          onClick={resetAll}
+                        >
+                          Process Another Resume
+                        </Button>
+                      </div>
                     )}
                   </CardContent>
                 </Card>

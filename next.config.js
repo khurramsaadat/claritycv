@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Client-side rendering only - no SSR for privacy-first app
+  output: 'export',
+  trailingSlash: true,
+  
   webpack: (config, { isServer }) => {
     // Handle PDF.js and client-side only libraries
     if (isServer) {
@@ -19,6 +23,15 @@ const nextConfig = {
     };
 
     return config;
+  },
+  
+  images: {
+    unoptimized: true, // Required for static export
+  },
+  
+  // Disable experimental features that might cause SSR issues
+  experimental: {
+    esmExternals: false,
   },
 };
 

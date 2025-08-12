@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Palette } from "lucide-react";
+import { Settings, Palette, Shield, Trash2, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,10 +10,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useTheme } from "./ThemeProvider";
+import { DataClearanceManager } from "./privacy/DataClearanceManager";
+import { PerformanceMonitor } from "./performance/PerformanceMonitor";
+import { TemplateSelector } from "./templates/TemplateSelector";
+import { useState } from "react";
 
 export function SettingsDropdown() {
   const { theme, setTheme, themes } = useTheme();
+  const [isPrivacyDialogOpen, setIsPrivacyDialogOpen] = useState(false);
+
+  const clearAllData = () => {
+    // Clear all application data except theme preference
+    const currentTheme = localStorage.getItem("theme");
+    localStorage.clear();
+    sessionStorage.clear();
+    if (currentTheme) {
+      localStorage.setItem("theme", currentTheme);
+    }
+    
+    // Show confirmation
+    alert("All application data has been cleared while preserving your theme preference.");
+  };
 
   return (
     <DropdownMenu>
@@ -79,10 +105,101 @@ export function SettingsDropdown() {
           </div>
         </div>
         
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-muted-foreground text-xs">
-          More settings coming soon...
-        </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+              
+              {/* Privacy Settings */}
+              <div className="p-2">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="h-4 w-4" />
+                  <span className="text-sm font-medium">Privacy Controls</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <Dialog open={isPrivacyDialogOpen} onOpenChange={setIsPrivacyDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full justify-start">
+                        <Settings className="h-3 w-3 mr-2" />
+                        Manage Data
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Privacy & Data Management</DialogTitle>
+                        <DialogDescription>
+                          Control your data and privacy settings. ClarityCV processes everything locally in your browser.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DataClearanceManager />
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-950"
+                    onClick={clearAllData}
+                  >
+                    <Trash2 className="h-3 w-3 mr-2" />
+                    Clear All Data
+                  </Button>
+                </div>
+              </div>
+              
+              <DropdownMenuSeparator />
+              
+              {/* Performance Monitor */}
+              <div className="p-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      <Activity className="h-3 w-3 mr-2" />
+                      Performance Monitor
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Performance Monitor</DialogTitle>
+                      <DialogDescription>
+                        Monitor memory usage, library loading, and performance metrics.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <PerformanceMonitor />
+                  </DialogContent>
+                </Dialog>
+              </div>
+              
+              <DropdownMenuSeparator />
+              
+              {/* Template Selection */}
+              <div className="p-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-start">
+                      <Palette className="h-3 w-3 mr-2" />
+                      Resume Templates
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Choose Resume Template</DialogTitle>
+                      <DialogDescription>
+                        Select from our ATS-optimized templates designed for maximum compatibility.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <TemplateSelector 
+                      selectedTemplate="classic-professional"
+                      onTemplateSelect={(template) => {
+                        console.log('Template selected:', template.name);
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+              
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-muted-foreground text-xs">
+                100% Private • Client-Side Processing • Performance Optimized
+              </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

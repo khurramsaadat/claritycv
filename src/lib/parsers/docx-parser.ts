@@ -1,6 +1,7 @@
 // DOCX parsing engine using mammoth.js library for client-side processing
-import * as mammoth from 'mammoth';
 import { createUploadError, UPLOAD_ERROR_CODES } from '@/lib/file-validation';
+import { loadLibrary } from '@/lib/performance/lazy-loader';
+import { memoryManager } from '@/lib/performance/memory-manager';
 import type { UploadedFile } from '@/types/file-upload';
 import type { ParsedDocument } from './pdf-parser';
 
@@ -19,6 +20,9 @@ export async function parseDOCX(uploadedFile: UploadedFile): Promise<ParsedDocum
       );
     }
 
+    // Load mammoth.js library dynamically
+    const mammoth = await loadLibrary.mammoth() as typeof import('mammoth');
+    
     // Parse DOCX using mammoth.js with text extraction
     const result = await mammoth.extractRawText({ arrayBuffer: uploadedFile.buffer });
 
@@ -105,11 +109,17 @@ export async function parseEnhancedDOCX(uploadedFile: UploadedFile): Promise<Par
       );
     }
 
-    // Extract both raw text and HTML for better structure understanding
-    const [textResult, htmlResult] = await Promise.all([
-      mammoth.extractRawText({ arrayBuffer: uploadedFile.buffer }),
-      mammoth.convertToHtml({ arrayBuffer: uploadedFile.buffer })
-    ]);
+              // Load mammoth.js library dynamically
+          const mammoth = await loadLibrary.mammoth() as typeof import('mammoth');
+          
+          // Store file in memory manager for potential reuse
+          memoryManager.storeFileData(`docx-${uploadedFile.metadata.name}`, uploadedFile.buffer, 'docx');
+
+          // Extract both raw text and HTML for better structure understanding
+          const [textResult, htmlResult] = await Promise.all([
+            mammoth.extractRawText({ arrayBuffer: uploadedFile.buffer }),
+            mammoth.convertToHtml({ arrayBuffer: uploadedFile.buffer })
+          ]);
 
     if (!textResult.value || textResult.value.trim().length === 0) {
       throw createUploadError(

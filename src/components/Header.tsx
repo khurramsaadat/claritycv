@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SettingsDropdown } from "./SettingsDropdown";
+import { PrivacyIndicator } from "./privacy/PrivacyIndicator";
+import { PerformanceMonitor } from "./performance/PerformanceMonitor";
 
 export function Header() {
   return (
@@ -19,15 +21,17 @@ export function Header() {
             <div className="w-full flex-1 md:w-auto md:flex-none">
               {/* Navigation items can go here */}
             </div>
-            <nav className="flex items-center space-x-2">
-              <Badge variant="outline">Next.js</Badge>
-              <Badge variant="outline">Tailwind</Badge>
-              <Badge variant="outline">Shadcn</Badge>
-              <Button variant="outline" size="sm">
-                Get Started
-              </Button>
-              <SettingsDropdown />
-            </nav>
+                              <nav className="flex items-center space-x-2">
+                    <PrivacyIndicator />
+                    <PerformanceMonitor compact />
+                    <Badge variant="outline">Next.js</Badge>
+                    <Badge variant="outline">Tailwind</Badge>
+                    <Badge variant="outline">Shadcn</Badge>
+                    <Button variant="outline" size="sm">
+                      Get Started
+                    </Button>
+                    <SettingsDropdown />
+                  </nav>
           </div>
         </div>
       </div>

@@ -2,20 +2,11 @@
 import { createUploadError, UPLOAD_ERROR_CODES } from '@/lib/file-validation';
 import type { UploadedFile } from '@/types/file-upload';
 
-// Dynamic import for pdfjs-dist to avoid SSR issues
+// Use performance-optimized lazy loader
+import { loadLibrary } from '@/lib/performance/lazy-loader';
+
 async function loadPDFJS() {
-  if (typeof window === 'undefined') {
-    throw new Error('PDF parsing is only available in browser environment');
-  }
-  
-  const pdfjs = await import('pdfjs-dist');
-  
-  // Configure PDF.js worker only on client side
-  if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-  }
-  
-  return pdfjs;
+  return loadLibrary.pdfjs();
 }
 
 export interface ParsedDocument {
@@ -49,9 +40,9 @@ export async function parsePDF(uploadedFile: UploadedFile): Promise<ParsedDocume
       );
     }
 
-    // Load PDF.js dynamically (client-side only)
-    const pdfjs = await loadPDFJS();
-    
+        // Load PDF.js dynamically (client-side only)
+    const pdfjs = await loadPDFJS() as typeof import('pdfjs-dist');
+
     // Load PDF document using pdfjs-dist
     const pdf = await pdfjs.getDocument({ data: uploadedFile.buffer }).promise;
     

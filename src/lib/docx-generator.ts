@@ -1,5 +1,6 @@
 // DOCX file generation using docx library for real Microsoft Word documents
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { loadLibrary } from '@/lib/performance/lazy-loader';
+import { memoryManager } from '@/lib/performance/memory-manager';
 import type { ATSOptimizedDocument } from './ats-optimizer';
 
 /**
@@ -12,11 +13,15 @@ export async function generateDOCX(
   optimizedDocument: ATSOptimizedDocument,
   originalFileName: string
 ): Promise<{ buffer: Uint8Array; filename: string }> {
+  // Load DOCX library dynamically
+  const docx = await loadLibrary.docx() as typeof import('docx');
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = docx;
+  
   const baseName = originalFileName.replace(/\.[^/.]+$/, '');
   const filename = `${baseName}_ATS_optimized.docx`;
 
   // Create document sections
-  const children: (Paragraph)[] = [];
+  const children: InstanceType<typeof Paragraph>[] = [];
 
   // Split content by sections for better formatting
   const sections = optimizedDocument.sections;
@@ -236,6 +241,9 @@ export async function generateDOCX(
   const uint8Array = buffer instanceof Uint8Array 
     ? new Uint8Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength))
     : new Uint8Array(buffer);
+  
+  // Store generated file in memory manager for potential reuse
+  memoryManager.storeFileData(`generated-${filename}`, uint8Array.buffer as ArrayBuffer, 'docx');
   
   return {
     buffer: uint8Array,

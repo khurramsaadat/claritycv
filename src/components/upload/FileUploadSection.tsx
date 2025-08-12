@@ -131,34 +131,43 @@ export function FileUploadSection() {
               )}
             </div>
 
-            {/* Privacy & Security Info - Takes up 1 column */}
-            <div className="space-y-4">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-green-500" />
-                    100% Private
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>No server uploads</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>No data storage</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>No tracking or analytics</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>Processing happens in your browser</span>
-                  </div>
-                </CardContent>
-              </Card>
+                               {/* Privacy & Security Info - Takes up 1 column */}
+                   <div className="space-y-4">
+                     <Card className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
+                       <CardHeader className="pb-3">
+                         <CardTitle className="text-lg flex items-center gap-2 text-green-700 dark:text-green-300">
+                           <Shield className="h-5 w-5 text-green-500" />
+                           100% Private & Secure
+                         </CardTitle>
+                       </CardHeader>
+                       <CardContent className="space-y-3">
+                         <div className="text-sm text-green-600 dark:text-green-400 font-medium mb-3">
+                           Your resume never leaves your device. We guarantee it.
+                         </div>
+                         
+                         <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
+                           <CheckCircle2 className="h-4 w-4 text-green-500" />
+                           <span>Zero server uploads</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
+                           <CheckCircle2 className="h-4 w-4 text-green-500" />
+                           <span>No data storage anywhere</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
+                           <CheckCircle2 className="h-4 w-4 text-green-500" />
+                           <span>No tracking or analytics</span>
+                         </div>
+                         <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300">
+                           <CheckCircle2 className="h-4 w-4 text-green-500" />
+                           <span>All processing in your browser</span>
+                         </div>
+                         
+                         <div className="mt-3 p-2 bg-white dark:bg-green-900 border border-green-200 dark:border-green-700 rounded text-xs text-green-600 dark:text-green-400">
+                           <strong>How we&apos;re different:</strong> Unlike other tools that upload your resume to servers, 
+                           ClarityCV processes everything locally using advanced browser technology. Your data is 100% yours.
+                         </div>
+                       </CardContent>
+                     </Card>
 
               <Card>
                 <CardHeader className="pb-3">
@@ -266,23 +275,35 @@ export function FileUploadSection() {
             </div>
           </div>
 
-          {/* Additional Info */}
-          <div className="mt-8 text-center">
-            <div className="grid gap-4 sm:grid-cols-3 text-sm text-muted-foreground">
-              <div className="flex items-center justify-center gap-2">
-                <Shield className="h-4 w-4 text-green-500" />
-                <span>Bank-level security</span>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Zap className="h-4 w-4 text-blue-500" />
-                <span>Lightning fast processing</span>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Download className="h-4 w-4 text-purple-500" />
-                <span>Multiple download formats</span>
-              </div>
-            </div>
-          </div>
+                           {/* Enhanced Privacy Notice */}
+                 <div className="mt-8">
+                   <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950 border border-green-200 dark:border-green-800 rounded-lg p-6 text-center">
+                     <div className="flex items-center justify-center gap-2 mb-3">
+                       <Shield className="h-6 w-6 text-green-500" />
+                       <span className="text-lg font-semibold text-green-700 dark:text-green-300">Privacy-First Promise</span>
+                     </div>
+                     
+                     <p className="text-sm text-green-600 dark:text-green-400 max-w-2xl mx-auto mb-4">
+                       We built ClarityCV with privacy as our foundation. Your resume data is processed entirely in your browser 
+                       using advanced client-side technology. No servers, no uploads, no exceptions.
+                     </p>
+                     
+                     <div className="grid gap-3 sm:grid-cols-3 text-sm">
+                       <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400">
+                         <Shield className="h-4 w-4" />
+                         <span>Military-grade privacy</span>
+                       </div>
+                       <div className="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400">
+                         <Zap className="h-4 w-4" />
+                         <span>Instant processing</span>
+                       </div>
+                       <div className="flex items-center justify-center gap-2 text-purple-600 dark:text-purple-400">
+                         <Download className="h-4 w-4" />
+                         <span>Professional formats</span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
         </div>
       </div>
     </section>
